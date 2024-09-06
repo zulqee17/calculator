@@ -1,6 +1,10 @@
+import 'dart:ffi';
+
 import 'package:calculator/colors/colors.dart';
+import 'package:calculator/controller/calculator_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 class CalculatorScreen extends StatefulWidget {
@@ -12,44 +16,13 @@ class CalculatorScreen extends StatefulWidget {
 
 class _CalculatorScreenState extends State<CalculatorScreen> {
 
-  String equation='0';
-  String result='0';
-  String expression='';
+  final controller=Get.put(CalculatorController());
 
-  buttonPressed(btnText){
-    setState(() {
-      if(btnText=='AC'){
-        equation='';
-        result='';
-
-      }else if(btnText=='⌫'){
-        equation=equation.substring(0,equation.length-1);
-
-      }else if(btnText=='='){
-        expression =equation;
-        expression=expression.replaceAll('×', '*');
-        expression=expression.replaceAll('÷', '/');
-        // expression=expression.replaceAll('×', '*');
-        try{
-          Parser p=Parser();
-          Expression exp=p.parse(expression);
-          ContextModel cm=ContextModel();
-          result='${exp.evaluate(EvaluationType.REAL, cm)}';
-        }catch(e){
-          if (kDebugMode) {
-            print('error: ${e.toString()}');
-          }
-        }
-      } else{
-        equation =equation+btnText;
-      }
-    });
-  }
 
   Widget buttons(String txtBtn,var btnWidth, Color btnColor,Color txtColor){
     return GestureDetector(
       onTap: (){
-        buttonPressed(txtBtn);
+        controller.buttonPressed(txtBtn);
       },
       child: Container(
         alignment: Alignment.center,
@@ -66,6 +39,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('build from top');
     return Scaffold(
       backgroundColor: Colours().backgroundColor,
       appBar: AppBar(
@@ -83,35 +57,39 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             SizedBox(
               height: 5,
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                alignment: Alignment.centerRight,
-                height: 70,
-                width: MediaQuery.of(context).size.width*1,
-                decoration: BoxDecoration(
-                  color: Colours().backgroundColor
+            Obx((){
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.centerRight,
+                  height: 70,
+                  width: MediaQuery.of(context).size.width*1,
+                  decoration: BoxDecoration(
+                      color: Colours().backgroundColor
+                  ),
+                  child:  Text(controller.equation.value.toString(),style: TextStyle(fontSize: 40,color:Colours().foregroundColor),),
                 ),
-                child:  Text(equation,style: TextStyle(fontSize: 40,color:Colours().foregroundColor),),
-              ),
-            ),
+              );
+            }),
             SizedBox(
               height: 5,
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                alignment: Alignment.centerRight,
-                height: 70,
-                width: MediaQuery.of(context).size.width*1,
-                decoration: BoxDecoration(
+            Obx((){
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.centerRight,
+                  height: 70,
+                  width: MediaQuery.of(context).size.width*1,
+                  decoration: BoxDecoration(
                     color: Colours().backgroundColor,
+                  ),
+                  child:  Text(controller.result.value,style: TextStyle(fontSize: 45,color:Colours().foregroundColor ),),
                 ),
-                child:  Text(result,style: TextStyle(fontSize: 45,color:Colours().foregroundColor ),),
-              ),
-            ),
+              );
+            }),
             SizedBox(
               height: 5,
             ),
