@@ -1,6 +1,6 @@
-# calculator
+# calculator using getx Statemanagment
 
-A new Flutter project.
+A simple calculator using Getx Statemanagement.
 
 ## Getting Started
 
