@@ -8,5 +8,6 @@ class Colours{
    Color operationButtonColor=Colors.blue.shade900;
    Color clearAndDivideButtonColor=Colors.white24;
    Color numberButtonColor=Colors.white10;
+   Color abc=Colors.black;
 
 }
